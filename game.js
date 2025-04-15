@@ -28,14 +28,12 @@ class Game extends Phaser.Scene {
     }
     
     preload(){
+
         this.load.image('sky', 'assets/images/sky.png');
         this.load.spritesheet('knight', 'assets/images/knight.png', { frameWidth: 32, frameHeight: 28 });
         this.load.spritesheet('slime', 'assets/images/slime_green.png', { frameWidth: 24, frameHeight: 24.4});
-    
-        this.load.spritesheet('floor', 'assets/images/platforms.png', { frameWidth: 14, frameHeight: 16})
-        
+        this.load.spritesheet('floor', 'assets/images/platforms.png', { frameWidth: 14, frameHeight: 16})  
         this.load.spritesheet('fruit', 'assets/images/coin.png', { frameWidth: 16, frameHeight: 16});
-    
         this.load.audio('pew', 'assets/sounds/power_up.wav');
     }
     
@@ -48,9 +46,9 @@ class Game extends Phaser.Scene {
     platforms = this.physics.add.staticGroup(
         {
         key: 'floor',
-        frame: 4,
-        repeat: 10,
-        setXY: { x: 50, y: 600, stepX: 75 }
+        frame: 6,
+        repeat: 17,
+        setXY: { x: -25, y: 600, stepX: 60 }
         }
     );
     
