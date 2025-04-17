@@ -28,4 +28,4 @@ class End extends Phaser.Scene {
 
 }
   
-export default Titre
+export default End
