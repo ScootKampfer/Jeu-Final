@@ -23,6 +23,7 @@ class Titre extends Phaser.Scene {
 
     // Ajout de la barre d'espacement
     keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+    
     }
     
     update(time, delta){
