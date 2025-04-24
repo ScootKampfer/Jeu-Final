@@ -93,20 +93,24 @@ class Game extends Phaser.Scene {
     //Création score
     score1Text = this.add.text(16, 16, 'moneyP1: 100', { fontSize: '32px', fill: '#000' });
     score2Text = this.add.text(500, 16, "moneyP2: 100", { fontSize: "32px", fill: "#000"});
-    lifeText = this.add.text(16, 16, 'moneyP1: 100', { fontSize: '32px', fill: '#000' });
-    life2Text = this.add.text(500, 16, "moneyP2: 100", { fontSize: "32px", fill: "#000"});
+    lifeText = this.add.text(16, 50, 'lifeP1: 3', { fontSize: '32px', fill: '#000' });
+    life2Text = this.add.text(500, 50, "lifeP2: 3", { fontSize: "32px", fill: "#000"});
 
 // Gestion des collisions entre ennemy et pewpew
     this.physics.add.collider(pewpewsGroup1, ennemy, function(pewpewCollide, ennemyCollide){
         pewpew.destroy();
-
+        score1 += 10;
+        life2 = life2 - 1;
         score1Text.setText('money: ' + score1);
+        life2Text.setText("life: " + life2);
     }.bind(this)); 
 
     this.physics.add.collider(pewpewsGroup2, player, function(pewpew2Collide, playerCollide){
-        pewpew2Collide.destroy();
-
+        pewpew2.destroy();
+        score2 += 10;
+        life = life - 1;
         score2Text.setText('money: ' + score2);
+        lifeText.setText("life: " + life);
 
     }.bind(this)); 
 
