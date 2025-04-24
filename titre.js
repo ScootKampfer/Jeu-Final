@@ -1,5 +1,4 @@
 var bg;
-var keySpace;
 
 class Titre extends Phaser.Scene {
     constructor(){
@@ -20,9 +19,6 @@ class Titre extends Phaser.Scene {
     this.time.delayedCall(1000, () => {
         this.scene.switch('menu_scene');
     });
-
-    // Ajout de la barre d'espacement
-    keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     
     }
     

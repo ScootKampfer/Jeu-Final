@@ -3,20 +3,30 @@ var platforms;
 
 var player;
 var ennemy;
-var ennemyGroup;
 var pewpewsGroup1;
+var pewpewsGroup2;
+var pewpew2;
 var pewpew;
+
+var life = 3;
+var life2 = 3;
+var lifeText;
+var life2Text
 
 var cursors;
 var keySpace;
 var keyA;
 var keyD;
 var keyW;
+var keyH;
 
 var firePewpew = false;
+var firePewpew2 = false;
 
-var score = 100;
-var scoreText;
+var score1 = 100;
+var score2 = 100;
+var score1Text;
+var score2Text;
 
 class Game extends Phaser.Scene {    
     constructor(){
@@ -34,6 +44,7 @@ class Game extends Phaser.Scene {
         this.load.spritesheet('slime', 'assets/images/slime_green.png', { frameWidth: 24, frameHeight: 24.4});
         this.load.spritesheet('floor', 'assets/images/platforms.png', { frameWidth: 14, frameHeight: 16})  
         this.load.spritesheet('fruit', 'assets/images/coin.png', { frameWidth: 16, frameHeight: 16});
+        this.load.image("fruit2", "assets/images/fruit.png");
         this.load.audio('pew', 'assets/sounds/power_up.wav');
     }
     
@@ -59,46 +70,48 @@ class Game extends Phaser.Scene {
 
    //Création des groupes pour projectiles et ennemies
     pewpewsGroup1 = this.physics.add.group();
-    ennemyGroup = this.physics.add.group();
+    pewpewsGroup2 = this.physics.add.group();
 
     // Création du joueur et des collisions applicables
     player = this.physics.add.sprite(100, 400, 'knight');
+    player.setSize(16,20, true);
+    player.setOffset(8,8);
     player.setScale(5);
     player.setBounce(0.1);
     player.setCollideWorldBounds(true);
     this.physics.add.collider(player, platforms);
    
-    // Création de l'ennemi et des collisions applicables
+    // Création de l'ennemi et descollisions applicables
     ennemy = this.physics.add.sprite(700, 400, 'slime');
     ennemy.setSize(20,16, true);
     ennemy.setOffset(2,8);
     ennemy.setScale(5);
-    ennemy.setBounce(0.8);
+    ennemy.setBounce(0.1);
     ennemy.setCollideWorldBounds(true);
     this.physics.add.collider(ennemy, platforms);
-    ennemyGroup.add(ennemy);
     
     //Création score
-    scoreText = this.add.text(16, 16, 'money: 100', { fontSize: '32px', fill: '#000' });
+    score1Text = this.add.text(16, 16, 'moneyP1: 100', { fontSize: '32px', fill: '#000' });
+    score2Text = this.add.text(500, 16, "moneyP2: 100", { fontSize: "32px", fill: "#000"});
+    lifeText = this.add.text(16, 16, 'moneyP1: 100', { fontSize: '32px', fill: '#000' });
+    life2Text = this.add.text(500, 16, "moneyP2: 100", { fontSize: "32px", fill: "#000"});
 
 // Gestion des collisions entre ennemy et pewpew
-    this.physics.add.collider(pewpewsGroup1, ennemyGroup, function(pewpewCollide, ennemyCollide){
-        pewpewCollide.destroy();
-        ennemyCollide.destroy();
+    this.physics.add.collider(pewpewsGroup1, ennemy, function(pewpewCollide, ennemyCollide){
+        pewpew.destroy();
 
-       
-        scoreText.setText('money: ' + score);
+        score1Text.setText('money: ' + score1);
+    }.bind(this)); 
 
-        ennemy = this.physics.add.sprite(700, 400, 'slime');
-        ennemy.setScale(5);
-        ennemy.setBounce(0.8);
-        ennemy.setCollideWorldBounds(true);
-        this.physics.add.collider(ennemy, platforms);
-        ennemyGroup.add(ennemy);
+    this.physics.add.collider(pewpewsGroup2, player, function(pewpew2Collide, playerCollide){
+        pewpew2Collide.destroy();
+
+        score2Text.setText('money: ' + score2);
+
     }.bind(this)); 
 
     // Gestion des collisions entre ennemy et player
-    this.physics.add.collider(player, ennemyGroup, function(){
+    this.physics.add.collider(player, ennemy, function(){
         this.scene.restart();
     }.bind(this)); 
 
@@ -134,20 +147,20 @@ class Game extends Phaser.Scene {
     keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
     keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
     keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
-   
+    keyH = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.H);
 
 
     }
     
     update(time, delta){
-        if(score <0){
-            this.scene.switch('titre_scene');
-            score = 100;
-            scoreText.setText('money: ' + score);
+        if(score1 <= 0 || score2 <= 0|| life <= 0 || life2 <= 0){
+            this.scene.switch('end_scene');
             pewpewsGroup1.children.each(function (item){
                 item.destroy();
             })
-
+            pewpewsGroup2.children.each(function (item){
+                item.destroy();
+            })
         }
         ennemy.anims.play('idle_slime', true);
 
@@ -206,25 +219,50 @@ class Game extends Phaser.Scene {
 
 
     
-        if(keySpace.isDown){
-            if (firePewpew == false){
+        if(keyH.isDown){
+            if (firePewpew2 == false){
                 
-                firePewpew = true;
-                pewpew = this.physics.add.sprite(player.x, player.y, 'fruit');
-                pewpewsGroup1.add(pewpew);
+                firePewpew2 = true;
+                pewpew2 = this.physics.add.sprite(ennemy.x, ennemy.y, 'fruit2');
+                pewpewsGroup2.add(pewpew2);
     
-                pewpew.setVelocityY(-300); // Vitesse de la bullet
-                pewpew.setVelocityX(300); // Vitesse de la bullet
-                pewpew.setBounce(0.9); // à randomiser
-                pewpew.setScale(3);
-                pewpew.setCollideWorldBounds(true);
-                this.physics.add.collider(pewpew, platforms);
+                pewpew2.setVelocityY(-300); // Vitesse de la bullet
+                pewpew2.setVelocityX(-300); // Vitesse de la bullet
+                pewpew2.setBounce(0.9); // à randomiser
+                pewpew2.setScale(3);
+                pewpew2.setCollideWorldBounds(true);
+                this.physics.add.collider(pewpew2, platforms);
     
                 this.sound.play('pew');
-                score -= 10;
-                scoreText.setText('money: ' + score);
+                score2 -= 10;
+                score2Text.setText('moneyP2: ' + score2);
                 
-            } 
+            }
+        }
+        
+        if (keyH.isUp){
+            firePewpew2 = false;
+        }
+
+            if(keySpace.isDown){
+                if (firePewpew == false){
+                    
+                    firePewpew = true;
+                    pewpew = this.physics.add.sprite(player.x, player.y, 'fruit');
+                    pewpewsGroup1.add(pewpew);
+        
+                    pewpew.setVelocityY(-300); // Vitesse de la bullet
+                    pewpew.setVelocityX(300); // Vitesse de la bullet
+                    pewpew.setBounce(0.9); // à randomiser
+                    pewpew.setScale(3);
+                    pewpew.setCollideWorldBounds(true);
+                    this.physics.add.collider(pewpew, platforms);
+        
+                    this.sound.play('pew');
+                    score1 -= 10;
+                    score1Text.setText('money: ' + score1);
+                    
+                } 
         } 
         if(keySpace.isUp){
             firePewpew = false;
@@ -239,6 +277,15 @@ class Game extends Phaser.Scene {
         }
     
         pewpewsGroup1.children.each(function (item){
+            
+            if (item.y > 525){
+         item.setVelocityX(0);
+            item.setVelocityY(0);
+               
+            }
+        })
+
+        pewpewsGroup2.children.each(function (item){
             
             if (item.y > 525){
          item.setVelocityX(0);

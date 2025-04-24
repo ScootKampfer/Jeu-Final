@@ -2,11 +2,13 @@ import Titre from './titre.js'
 import Game from './game.js'
 import Menu from "./menu.js"
 import End from "./end.js"
+import Credits from "./credits.js"
 
 const titre_scene = new Titre();
 const game_scene = new Game();
 const menu_scene = new Menu();
 const end_scene = new End();
+const credits_scene = new Credits();
 
 var config = {
     type: Phaser.AUTO,
@@ -27,5 +29,6 @@ game.scene.add('titre_scene', titre_scene);
 game.scene.add('game_scene', game_scene);
 game.scene.add("menu_scene", menu_scene);
 game.scene.add("end_scene", end_scene);
+game.scene.add("credits_scene", credits_scene);
 
 game.scene.start('titre_scene');
