@@ -76,7 +76,7 @@ class Game extends Phaser.Scene {
     player = this.physics.add.sprite(100, 400, 'knight');
     player.setSize(16,20, true);
     player.setOffset(8,8);
-    player.setScale(5);
+    player.setScale(3);
     player.setBounce(0.1);
     player.setCollideWorldBounds(true);
     this.physics.add.collider(player, platforms);
@@ -85,7 +85,7 @@ class Game extends Phaser.Scene {
     ennemy = this.physics.add.sprite(700, 400, 'slime');
     ennemy.setSize(20,16, true);
     ennemy.setOffset(2,8);
-    ennemy.setScale(5);
+    ennemy.setScale(3);
     ennemy.setBounce(0.1);
     ennemy.setCollideWorldBounds(true);
     this.physics.add.collider(ennemy, platforms);
@@ -157,8 +157,17 @@ class Game extends Phaser.Scene {
     }
     
     update(time, delta){
-        if(score1 <= 0 || score2 <= 0|| life <= 0 || life2 <= 0){
-            this.scene.switch('end_scene');
+        if(score1 <= 0 ||  life <= 0){
+            this.scene.switch('end1_scene');
+            pewpewsGroup1.children.each(function (item){
+                item.destroy();
+            })
+            pewpewsGroup2.children.each(function (item){
+                item.destroy();
+            })
+        }
+        if( score2 <= 0 || life2 <= 0){
+            this.scene.switch('end2_scene');
             pewpewsGroup1.children.each(function (item){
                 item.destroy();
             })
@@ -233,7 +242,7 @@ class Game extends Phaser.Scene {
                 pewpew2.setVelocityY(-300); // Vitesse de la bullet
                 pewpew2.setVelocityX(-300); // Vitesse de la bullet
                 pewpew2.setBounce(0.9); // à randomiser
-                pewpew2.setScale(3);
+                pewpew2.setScale(1);
                 pewpew2.setCollideWorldBounds(true);
                 this.physics.add.collider(pewpew2, platforms);
     
@@ -258,7 +267,7 @@ class Game extends Phaser.Scene {
                     pewpew.setVelocityY(-300); // Vitesse de la bullet
                     pewpew.setVelocityX(300); // Vitesse de la bullet
                     pewpew.setBounce(0.9); // à randomiser
-                    pewpew.setScale(3);
+                    pewpew.setScale(1);
                     pewpew.setCollideWorldBounds(true);
                     this.physics.add.collider(pewpew, platforms);
         
