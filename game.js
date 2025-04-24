@@ -1,5 +1,6 @@
 var bg;
 var platforms;
+var platforms2;
 
 var player;
 var ennemy;
@@ -46,6 +47,7 @@ class Game extends Phaser.Scene {
         this.load.spritesheet('fruit', 'assets/images/coin.png', { frameWidth: 16, frameHeight: 16});
         this.load.image("fruit2", "assets/images/fruit.png");
         this.load.audio('pew', 'assets/sounds/power_up.wav');
+        this.load.spritesheet("tiles", "assets/images/tilemap_packed.png", {frameWidth: 18, frameHeight: 18});
     }
     
     create(data){
@@ -56,15 +58,29 @@ class Game extends Phaser.Scene {
     //Création des plateformes au sol
     platforms = this.physics.add.staticGroup(
         {
-        key: 'floor',
-        frame: 6,
+        key: 'tiles',
+        frame: 2,
         repeat: 17,
-        setXY: { x: -25, y: 600, stepX: 60 }
+        setXY: { x: 0, y: 575, stepX: 50 }
         }
     );
     
     platforms.children.iterate(function (child) {
-        child.setScale(5);
+        child.setScale(3);
+        child.refreshBody();
+    });
+
+    platforms2 = this.physics.add.staticGroup(
+        {
+        key: 'tiles',
+        frame: 2,
+        repeat: 4,
+        setXY: { x: 100, y: 350, stepX: 50 }
+        }
+    );
+    
+    platforms2.children.iterate(function (child) {
+        child.setScale(3);
         child.refreshBody();
     });
 
@@ -80,6 +96,7 @@ class Game extends Phaser.Scene {
     player.setBounce(0.1);
     player.setCollideWorldBounds(true);
     this.physics.add.collider(player, platforms);
+    this.physics.add.collider(player, platforms2);
    
     // Création de l'ennemi et descollisions applicables
     ennemy = this.physics.add.sprite(700, 400, 'slime');
@@ -89,6 +106,7 @@ class Game extends Phaser.Scene {
     ennemy.setBounce(0.1);
     ennemy.setCollideWorldBounds(true);
     this.physics.add.collider(ennemy, platforms);
+    this.physics.add.collider(ennemy, platforms2);
     
     //Création score
     score1Text = this.add.text(16, 16, 'moneyP1: 100', { fontSize: '32px', fill: '#000' });
@@ -205,7 +223,7 @@ class Game extends Phaser.Scene {
     
         if (cursors.up.isDown && player.body.touching.down)
             {
-                player.setVelocityY(-300);  
+                player.setVelocityY(-500);  
             }
         if(cursors.up.isDown)
             {
@@ -219,7 +237,7 @@ class Game extends Phaser.Scene {
             
             if (keyW.isDown && ennemy.body.touching.down)
                 {
-                    ennemy.setVelocityY(-300);  
+                    ennemy.setVelocityY(-500);  
                 }
             if(keyW.isDown)
                 {
