@@ -9,8 +9,8 @@ var pewpewsGroup2;
 var pewpew2;
 var pewpew;
 
-var life = 3;
-var life2 = 3;
+var life = 10;
+var life2 = 10;
 var lifeText;
 var life2Text
 
@@ -48,6 +48,7 @@ class Game extends Phaser.Scene {
         this.load.image("fruit2", "assets/images/fruit.png");
         this.load.audio('pew', 'assets/sounds/power_up.wav');
         this.load.spritesheet("tiles", "assets/images/tilemap_packed.png", {frameWidth: 18, frameHeight: 18});
+        this.load.spritesheet("red_robot", "assets/images/red_robot3.png", {frameWidth: 180, frameHeight: 150});
     }
     
     create(data){
@@ -89,10 +90,8 @@ class Game extends Phaser.Scene {
     pewpewsGroup2 = this.physics.add.group();
 
     // Création du joueur et des collisions applicables
-    player = this.physics.add.sprite(100, 400, 'knight');
-    player.setSize(16,20, true);
-    player.setOffset(8,8);
-    player.setScale(3);
+    player = this.physics.add.sprite(100, 400, 'red_robot');
+    player.setScale(0.3);
     player.setBounce(0.1);
     player.setCollideWorldBounds(true);
     this.physics.add.collider(player, platforms);
@@ -111,8 +110,8 @@ class Game extends Phaser.Scene {
     //Création score
     score1Text = this.add.text(16, 16, 'moneyP1: 100', { fontSize: '32px', fill: '#000' });
     score2Text = this.add.text(500, 16, "moneyP2: 100", { fontSize: "32px", fill: "#000"});
-    lifeText = this.add.text(16, 50, 'lifeP1: 3', { fontSize: '32px', fill: '#000' });
-    life2Text = this.add.text(500, 50, "lifeP2: 3", { fontSize: "32px", fill: "#000"});
+    lifeText = this.add.text(16, 50, 'lifeP1: 10', { fontSize: '32px', fill: '#000' });
+    life2Text = this.add.text(500, 50, "lifeP2: 10", { fontSize: "32px", fill: "#000"});
 
 // Gestion des collisions entre ennemy et pewpew
     this.physics.add.collider(pewpewsGroup1, ennemy, function(pewpewCollide, ennemyCollide){
@@ -132,6 +131,19 @@ class Game extends Phaser.Scene {
 
     }.bind(this)); 
 
+    this.physics.add.collider(pewpewsGroup1, player, function(pewpewCollide, ennemyCollide){
+        pewpew.destroy();
+        score1 += 10;
+        score1Text.setText('money: ' + score1);
+    }.bind(this)); 
+
+    this.physics.add.collider(pewpewsGroup2, ennemy, function(pewpew2Collide, playerCollide){
+        pewpew2.destroy();
+        score2 += 10;
+        score2Text.setText('money: ' + score2);
+
+    }.bind(this)); 
+
     // Gestion des collisions entre ennemy et player
     this.physics.add.collider(player, ennemy, function(){
         this.scene.restart();
@@ -139,20 +151,13 @@ class Game extends Phaser.Scene {
 
     //Création des animations - knight et slime ...
     this.anims.create({
-        key: 'idle_knight',
-        frames: this.anims.generateFrameNumbers('knight', { start: 0, end: 3 }),
-        frameRate: 10,
+        key: 'idle_robot',
+        frames: this.anims.generateFrameNumbers('red_robot', { start: 0, end: 1 }),
+        frameRate: 2,
         repeat: -1,
 
     });
 
-    this.anims.create({
-        key: 'jump_knight',
-        frames: this.anims.generateFrameNumbers('knight', { start: 48, end: 55 }),
-        frameRate: 10,
-        repeat: 0
-    });
- 
     this.anims.create({
         key: 'idle_slime',
         frames: this.anims.generateFrameNumbers('slime', { start: 0, end: 3 }),
@@ -175,6 +180,23 @@ class Game extends Phaser.Scene {
     }
     
     update(time, delta){
+
+        if (score1 > 100) {
+            pewpewsGroup1.children.each(function (item){
+                item.destroy();
+            })
+            score1 = 100;
+            score1Text.setText('money: ' + score1);
+        }
+
+        if (score2 > 100) {
+            pewpewsGroup2.children.each(function (item){
+                item.destroy();
+            })
+            score2 = 100;
+            score2Text.setText('money: ' + score2);
+        }
+
         if(score1 <= 0 ||  life <= 0){
             this.scene.switch('end1_scene');
             pewpewsGroup1.children.each(function (item){
@@ -227,11 +249,11 @@ class Game extends Phaser.Scene {
             }
         if(cursors.up.isDown)
             {
-            player.anims.play('jump_knight', true);
+                //animation saut manquant
             }    
         if(player.body.touching.down)
             {
-            player.anims.play('idle_knight', true);  
+            player.anims.play('idle_robot', true);  
             } 
             
             
@@ -309,7 +331,7 @@ class Game extends Phaser.Scene {
     
         pewpewsGroup1.children.each(function (item){
             
-            if (item.y > 525){
+            if (item.y > 530){
          item.setVelocityX(0);
             item.setVelocityY(0);
                
