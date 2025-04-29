@@ -151,7 +151,7 @@ class Game extends Phaser.Scene {
         life2 = life2 - 1;
         life = life - 1;
         life2Text.setText('life: ' + life2);
-        life1Text.setText('life: ' + life1);
+        lifeText.setText('life: ' + life);
         player.x = 700;
         player.y = 400;
         player2.x = 100;
