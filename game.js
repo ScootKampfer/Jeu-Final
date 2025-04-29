@@ -131,18 +131,21 @@ class Game extends Phaser.Scene {
 
     }.bind(this)); 
 
-    this.physics.add.collider(pewpewsGroup1, player, function(pewpewCollide, ennemyCollide){
-        pewpew.destroy();
+    this.physics.add.overlap(player, pewpewsGroup1, collectpewpew1, null, this);
+    function collectpewpew1 (player, pewpewsGroup1)
+    {
+        pewpewsGroup1.disableBody(true, true);
         score1 += 10;
         score1Text.setText('money: ' + score1);
-    }.bind(this)); 
+    }
 
-    this.physics.add.collider(pewpewsGroup2, ennemy, function(pewpew2Collide, playerCollide){
-        pewpew2.destroy();
+    this.physics.add.overlap(player, pewpewsGroup2, collectpewpew2, null, this);
+    function collectpewpew2 (player, pewpewsGroup2)
+    {
+        pewpewsGroup2.disableBody(true, true);
         score2 += 10;
         score2Text.setText('money: ' + score2);
-
-    }.bind(this)); 
+    }
 
     // Gestion des collisions entre ennemy et player
     this.physics.add.collider(player, ennemy, function(){
@@ -301,7 +304,7 @@ class Game extends Phaser.Scene {
                 if (firePewpew == false){
                     
                     firePewpew = true;
-                    pewpew = this.physics.add.sprite(player.x, player.y, 'fruit');
+                    pewpew = this.physics.add.sprite(player.x+50, player.y-50, 'fruit');
                     pewpewsGroup1.add(pewpew);
         
                     pewpew.setVelocityY(-300); // Vitesse de la bullet
