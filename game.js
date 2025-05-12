@@ -50,11 +50,10 @@ class Game extends Phaser.Scene {
     }
     
     create(data){
-    //Création de l'arrière-plan
+
     bg = this.add.image(0, 0, 'sky');
     bg.setOrigin(0,0);
 
-    //Création des plateformes au sol
     platforms = this.physics.add.staticGroup(
         {
         key: 'tiles',
@@ -74,20 +73,26 @@ class Game extends Phaser.Scene {
         key: 'tiles',
         frame: 2,
         repeat: 4,
-        setXY: { x: 200, y: 350, stepX: 50 }
+        setXY: { x: 300, y: 350, stepX: 50 }
         }
     );
+
+    let startTile = platforms2.create(250, 350, 'tiles', 1);
+    startTile.setScale(3);
+    startTile.refreshBody();
+
+    let endTile = platforms2.create(550, 350, 'tiles', 3);
+    endTile.setScale(3);
+    endTile.refreshBody();
     
     platforms2.children.iterate(function (child) {
         child.setScale(3);
         child.refreshBody();
     });
 
-   //Création des groupes pour projectiles et ennemies
     pewpewsGroup1 = this.physics.add.group();
     pewpewsGroup2 = this.physics.add.group();
 
-    // Création du joueur et des collisions applicables
     player = this.physics.add.sprite(700, 400, 'red_robot');
     player.setOffset(0,-8);
     player.setScale(0.3);
@@ -95,8 +100,7 @@ class Game extends Phaser.Scene {
     player.setCollideWorldBounds(true);
     this.physics.add.collider(player, platforms);
     this.physics.add.collider(player, platforms2);
-   
-    // Création de l'ennemi et descollisions applicables
+
     player2 = this.physics.add.sprite(100, 400, 'green_robot');
     player2.setOffset(0,-8);
     player2.setScale(0.38);
@@ -104,14 +108,12 @@ class Game extends Phaser.Scene {
     player2.setCollideWorldBounds(true);
     this.physics.add.collider(player2, platforms);
     this.physics.add.collider(player2, platforms2);
-    
-    //Création score
+
     score1Text = this.add.text(16, 16, 'money: 100', { fontSize: '32px', fill: '#000' });
     score2Text = this.add.text(500, 16, "money: 100", { fontSize: "32px", fill: "#000" });
     lifeText = this.add.text(16, 50, 'life: 10', { fontSize: '32px', fill: '#000' });
     life2Text = this.add.text(500, 50, "life: 10", { fontSize: "32px", fill: "#000"});
 
-    
     this.physics.add.overlap(player2, pewpewsGroup1, damagePlayer2, null, this);
     function damagePlayer2 (player2, pewpewsGroup1)
     {
@@ -119,7 +121,6 @@ class Game extends Phaser.Scene {
         life = life - 1;
         lifeText.setText('life: ' + life);
     }
-
     
     this.physics.add.overlap(player, pewpewsGroup2, damagePlayer, null, this);
     function damagePlayer (player, pewpewsGroup2)
@@ -145,7 +146,6 @@ class Game extends Phaser.Scene {
         score1Text.setText('money: ' + score1);
     }
 
-    // Gestion des collisions entre player2 et player
     this.physics.add.collider(player, player2, function(){
         life2 = life2 - 1;
         life = life - 1;
@@ -173,17 +173,13 @@ class Game extends Phaser.Scene {
         repeat: -1,
     });
 
-    // Ajout des flèches du clavier
     cursors = this.input.keyboard.createCursorKeys();
 
-    // Ajout de la barre d'espacement
     keyVirugule = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.COMMA);
     keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
     keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
     keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
-   
-
 
     }
     
@@ -241,7 +237,7 @@ class Game extends Phaser.Scene {
             }
         if(cursors.up.isDown)
             {
-                //animation saut manquant
+                //animation saut à ajouter si temps
             }    
         if(player.body.touching.down)
             {
@@ -270,21 +266,27 @@ class Game extends Phaser.Scene {
                 firePewpew2 = true;
 
                 if (player.x > player2.x) {
-                        pewpew2 = this.physics.add.sprite(player2.x+40, player2.y-30, 'fruit2');
+                        pewpew2 = this.physics.add.sprite(player2.x+40, player2.y-20, 'fruit2');
                         pewpewsGroup2.add(pewpew2);
                         pewpew2.setVelocityX(300);
                     }
                 else {
-                        pewpew2 = this.physics.add.sprite(player2.x+-40, player2.y-30, 'fruit2');
+                        pewpew2 = this.physics.add.sprite(player2.x+-40, player2.y-20, 'fruit2');
                         pewpewsGroup2.add(pewpew2);
                         pewpew2.setVelocityX(-300);
                     }
-    
-                pewpew2.setVelocityY(-300); // Vitesse de la bullet
-                pewpew2.setBounce(0.9); // à randomiser
+
+                    if (player2.body.touching.up) {
+                        pewpew2.setVelocityY(0);
+                    } else {
+                        pewpew2.setVelocityY(-300);
+                    }
+
+                pewpew2.setBounce(0.9);
                 pewpew2.setScale(1);
                 pewpew2.setCollideWorldBounds(true);
                 this.physics.add.collider(pewpew2, platforms);
+                this.physics.add.collider(pewpew2, platforms2);
     
                 this.sound.play('pew');
                 score1 -= 10;
@@ -303,21 +305,27 @@ class Game extends Phaser.Scene {
                     firePewpew = true;
 
                     if (player.x < player2.x) {
-                        pewpew = this.physics.add.sprite(player.x+30, player.y-30, 'fruit');
+                        pewpew = this.physics.add.sprite(player.x+30, player.y-20, 'fruit');
                         pewpewsGroup1.add(pewpew);
-                        pewpew2.setVelocityX(300);
+                        pewpew.setVelocityX(300);
                     }
                     else {
-                        pewpew = this.physics.add.sprite(player.x+-30, player.y-30, 'fruit');
+                        pewpew = this.physics.add.sprite(player.x+-30, player.y-20, 'fruit');
                         pewpewsGroup1.add(pewpew);
                         pewpew.setVelocityX(-300);
                     }
 
-                    pewpew.setVelocityY(-300); // Vitesse de la bullet
-                    pewpew.setBounce(0.9); // à randomiser
+                    if (player.body.touching.up) {
+                        pewpew.setVelocityY(0);
+                    } else {
+                        pewpew.setVelocityY(-300);
+                    }
+
+                    pewpew.setBounce(0.9);
                     pewpew.setScale(1);
                     pewpew.setCollideWorldBounds(true);
                     this.physics.add.collider(pewpew, platforms);
+                    this.physics.add.collider(pewpew, platforms2);
         
                     this.sound.play('pew');
                     score2 -= 10;
