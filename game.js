@@ -40,8 +40,7 @@ class Game extends Phaser.Scene {
     
     preload(){
 
-        this.load.image('sky', 'assets/images/sky.png');
-        this.load.spritesheet('floor', 'assets/images/platforms.png', { frameWidth: 14, frameHeight: 16})  
+        this.load.image('sky', 'assets/images/sky.png')
         this.load.spritesheet('fruit', 'assets/images/coin.png', { frameWidth: 16, frameHeight: 16});
         this.load.image("fruit2", "assets/images/fruit.png");
         this.load.audio('pew', 'assets/sounds/power_up.wav');
@@ -75,7 +74,7 @@ class Game extends Phaser.Scene {
         key: 'tiles',
         frame: 2,
         repeat: 4,
-        setXY: { x: 100, y: 350, stepX: 50 }
+        setXY: { x: 200, y: 350, stepX: 50 }
         }
     );
     
@@ -269,11 +268,19 @@ class Game extends Phaser.Scene {
             if (firePewpew2 == false){
                 
                 firePewpew2 = true;
-                pewpew2 = this.physics.add.sprite(player2.x+30, player2.y-30, 'fruit2');
-                pewpewsGroup2.add(pewpew2);
+
+                if (player.x > player2.x) {
+                        pewpew2 = this.physics.add.sprite(player2.x+40, player2.y-30, 'fruit2');
+                        pewpewsGroup2.add(pewpew2);
+                        pewpew2.setVelocityX(300);
+                    }
+                else {
+                        pewpew2 = this.physics.add.sprite(player2.x+-40, player2.y-30, 'fruit2');
+                        pewpewsGroup2.add(pewpew2);
+                        pewpew2.setVelocityX(-300);
+                    }
     
                 pewpew2.setVelocityY(-300); // Vitesse de la bullet
-                pewpew2.setVelocityX(300); // Vitesse de la bullet
                 pewpew2.setBounce(0.9); // à randomiser
                 pewpew2.setScale(1);
                 pewpew2.setCollideWorldBounds(true);
@@ -298,7 +305,7 @@ class Game extends Phaser.Scene {
                     if (player.x < player2.x) {
                         pewpew = this.physics.add.sprite(player.x+30, player.y-30, 'fruit');
                         pewpewsGroup1.add(pewpew);
-                        pewpew.setVelocityX(300);
+                        pewpew2.setVelocityX(300);
                     }
                     else {
                         pewpew = this.physics.add.sprite(player.x+-30, player.y-30, 'fruit');
