@@ -191,7 +191,7 @@ class Game extends Phaser.Scene {
     update(time, delta){
 
         if(score1 < 0 ||  life <= 0){
-            this.scene.switch('end2_scene');
+            this.scene.switch('end1_scene');
             pewpewsGroup1.children.each(function (item){
                 item.destroy();
             })
@@ -200,7 +200,7 @@ class Game extends Phaser.Scene {
             })
         }
         if( score2 < 0 || life2 <= 0){
-            this.scene.switch('end1_scene');
+            this.scene.switch('end2_scene');
             pewpewsGroup1.children.each(function (item){
                 item.destroy();
             })
@@ -294,11 +294,19 @@ class Game extends Phaser.Scene {
                 if (firePewpew == false){
                     
                     firePewpew = true;
-                    pewpew = this.physics.add.sprite(player.x-30, player.y-30, 'fruit');
-                    pewpewsGroup1.add(pewpew);
-        
+
+                    if (player.x < player2.x) {
+                        pewpew = this.physics.add.sprite(player.x+30, player.y-30, 'fruit');
+                        pewpewsGroup1.add(pewpew);
+                        pewpew.setVelocityX(300);
+                    }
+                    else {
+                        pewpew = this.physics.add.sprite(player.x+-30, player.y-30, 'fruit');
+                        pewpewsGroup1.add(pewpew);
+                        pewpew.setVelocityX(-300);
+                    }
+
                     pewpew.setVelocityY(-300); // Vitesse de la bullet
-                    pewpew.setVelocityX(-300); // Vitesse de la bullet
                     pewpew.setBounce(0.9); // à randomiser
                     pewpew.setScale(1);
                     pewpew.setCollideWorldBounds(true);

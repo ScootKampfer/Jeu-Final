@@ -1,6 +1,7 @@
 var bg;
 var keyC;
 var keyP;
+var keyM;
 
 class Menu extends Phaser.Scene {
     constructor(){
@@ -21,6 +22,7 @@ class Menu extends Phaser.Scene {
 
         keyC = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.C);
         keyP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.P);
+        keyM = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.M);
     }
     
     update(time, delta){
@@ -32,6 +34,11 @@ class Menu extends Phaser.Scene {
         if (keyP.isDown) {
             this.scene.switch("game_scene");
         }
+        if (keyM.isDown) {
+            this.scene.switch("truction_scene");
+
+        }
+
 
     }
     
